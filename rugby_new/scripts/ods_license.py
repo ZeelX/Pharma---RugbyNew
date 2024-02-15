@@ -60,7 +60,7 @@ def run():
             h80_99=row['H - 80 à 99 ans'],
             h_nr=row['H - NR'],
             NRNR=row['NR - NR'],
-            Total=row['Total'],
+            total=row['Total'],
 
         )
         ods_objects.append(ods)

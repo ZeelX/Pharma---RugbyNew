@@ -86,3 +86,50 @@ class ODS_License(models.Model):
     h_nr = models.CharField(max_length=255)
     NRNR = models.CharField(max_length=255)
     total = models.CharField(max_length=255)
+
+
+class d_sex(models.Model):
+    code_sex = models.CharField(max_length=2, primary_key=True,unique=True)
+
+class d_age(models.Model):
+    code_age = models.CharField(max_length=10, primary_key=True,unique=True)
+
+class d_club_type(models.Model):
+    code_club_type = models.CharField(max_length=50, primary_key=True,unique=True)
+
+class d_federation(models.Model):
+    code_federation = models.CharField(max_length=15, primary_key=True,unique=True)
+    label = models.CharField(max_length=100)
+
+class d_date(models.Model):
+    date_PK = models.DateField(primary_key=True)
+
+class d_geo(models.Model):
+    geo_key = models.CharField(max_length=250, default=None, primary_key= True, unique=True)
+    code_commune = models.CharField(max_length=150)
+    label_commune = models.CharField(max_length=150)
+    code_qpv = models.CharField(max_length=150)
+    label_qpv = models.CharField(max_length=150)
+    code_departement = models.CharField(max_length=150)
+    label_departement = models.CharField(max_length=150)
+    region = models.CharField(max_length=150)
+    statut_geo = models.CharField(max_length=150, default=None)
+
+class f_license(models.Model):
+    license_PK = models.CharField(max_length=250, primary_key= True, unique=True)
+    federation_FK = models.ForeignKey(d_federation, on_delete=models.CASCADE)
+    sex_FK = models.ForeignKey(d_sex, on_delete=models.CASCADE)
+    age_FK = models.ForeignKey(d_age, on_delete=models.CASCADE)
+    date_FK = models.ForeignKey(d_date, on_delete=models.CASCADE)
+    geo_FK = models.ForeignKey(d_geo, on_delete=models.CASCADE)
+    count = models.IntegerField(default= None)
+    # pk => federation_FK + sex_FK + age_FK + date_FK + geo_FK
+class f_club(models.Model):
+    club_PK = models.CharField(max_length=250, primary_key= True,unique=True)
+    club_type_FK = models.ForeignKey(d_club_type, on_delete=models.CASCADE)
+    federation_FK = models.ForeignKey(d_federation, on_delete=models.CASCADE)
+    date_FK = models.ForeignKey(d_date, on_delete=models.CASCADE)
+    geo_FK = models.ForeignKey(d_geo, on_delete=models.CASCADE)
+    count = models.IntegerField(default= None)
+    #PK => club_type_FK + federation_FK + date_FK+ geo_FK
+
