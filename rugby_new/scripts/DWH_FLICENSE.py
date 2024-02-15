@@ -31,21 +31,11 @@ def extract_code_sex_and_age(element):
 for data in extract_data_f_license():
     extraction = extract_code_sex_and_age(data)
     print(extraction)
-    federation_instance, _ = d_federation.objects.get_or_create(code_federation=data.fede)
-    sex_instance, _ = d_sex.objects.get_or_create(code_sex=extraction[0])
-    age_instance, _ = d_age.objects.get_or_create(code_age=extraction[1])
-    date_instance, _ = d_date.objects.get_or_create(date_PK='2021-01-01')
-    geo_instance, _ = d_geo.objects.get_or_create(
-        geo_key=data.code_commune + data.code_QPV,
-        code_commune=data.code_commune,
-        label_commune=data.commune,
-        code_qpv=data.code_QPV,
-        label_qpv=data.name_qpv,
-        code_departement=data.departement,
-        label_departement='',
-        region=data.region,
-        statut_geo=data.statut_geo
-    )
+    federation_instance = d_federation.objects.get(code_federation=data.fede)
+    sex_instance = d_sex.objects.get(code_sex=extraction[0])
+    age_instance = d_age.objects.get(code_age=extraction[1])
+    date_instance = d_date.objects.get(date_PK='2021-01-01')
+    geo_instance = d_geo.objects.get(geo_key=data.code_commune + data.code_QPV)
 
     # Créer l'instance f_license
     f_license_instance = f_license(
