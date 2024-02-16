@@ -49,4 +49,6 @@ for data in extract_data_f_license():
     )
     f_license_list.append(f_license_instance)
 
+print('Start bulk insert')
+print(len(f_license_list))
 f_license.objects.bulk_create(f_license_list)

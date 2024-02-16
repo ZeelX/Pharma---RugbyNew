@@ -1,0 +1,62 @@
+Petit cours rapide sur l'API
+
+
+les api servent essentiellement au traitement des données des bases de manière sécurisée.
+Elles mettent en place des méthodes défini pour gérer les datas.
+
+
+afficher table name et count, en plus du SELECT *
+
+Serializers
+
+comment faire :
+
+import django.shortcut => render
+
+` from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status `
+
+
+///////////////API//////////////////
+creer une classe (dans views)
+hérite de APIViews
+
+
+ajouter dans urls.py la classe
+(path('nom_lien', nom classe.as_view())
+import le serialisers
+afficher les données :
+utilisation d'un sérialiser
+
+
+data = F_club.objects.all()
+serializer = F_club_serializer(data=data, many=True)
+serializer.is_valid()
+serializer.data
+
+result = {
+        'resultat':'blablabla',
+        'count': data.count(),
+        'data': serialiser.data
+}
+
+return Response(result, status=status.HTTP_200_OK)
+
+
+/////////////serializers.py ///////////////////////
+
+creer un fichier serialisers.py
+    doc
+    form rest_framework import serializers
+    from app.models import F_club ( le models de la base qu'on veux afficher )
+
+   class F_Club_Serializers(serializers.ModelSerializers):
+        class Meta:
+            model = F_club
+
+            fields = ['code','nombre','les_attribut_qu'on_veux_ficha']
+            //fields = '__all__'
+
+
+

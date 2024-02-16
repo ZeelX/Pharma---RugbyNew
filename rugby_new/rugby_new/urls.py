@@ -17,11 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from app.views import index, ods_data, ods_license
-# from api import urls as api_urls
+from api import urls as api_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('api/', include(api_urls)),
+    path('api/', include(api_urls)),
     path('', index, name='index'),
     path('ods/', ods_data, name='ods_data'),
     path('ods/', ods_license, name='ods_license'),
