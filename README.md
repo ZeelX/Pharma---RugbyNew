@@ -3,7 +3,7 @@
 [![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)  
 
 
-Repo cloned froma friend ( front-thief medal acquired )
+Repo cloned from a friend ( front-thief medal acquired )
 
 First try on Django, we have to push data on db in less time possible, then try to retreive number of row pushed.
 
