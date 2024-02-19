@@ -6,7 +6,8 @@ from app.models import (f_club,
                         d_sex,
                         d_geo,
                         d_club_type,
-                        d_federation)
+                        d_federation,
+                        city)
 
 
 class f_club_Serializer(serializers.ModelSerializer):
@@ -55,3 +56,9 @@ class d_federation_Serializer(serializers.ModelSerializer):
     class Meta:
         model = d_federation
         fields = '__all__'
+
+class city_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = city
+        fields = '__all__'
+

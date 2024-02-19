@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 from rest_framework import status `
 
 
-///////////////API//////////////////
+///////////////API\\\\\\\\\\\\\\\\\\\\
 creer une classe (dans views)
 hérite de APIViews
 
@@ -44,7 +44,7 @@ result = {
 return Response(result, status=status.HTTP_200_OK)
 
 
-/////////////serializers.py ///////////////////////
+/////////////serializers.py\\\\\\\\\\\\\\\\\\\\
 
 creer un fichier serialisers.py
     doc
@@ -59,4 +59,8 @@ creer un fichier serialisers.py
             //fields = '__all__'
 
 
+////////////////////Ajouter les methodes\\\\\\\\\\\\\\\\\\\\
 
+check on formation urls and API_formation (model: app.models => city)
+
+faire le makemigrations / migrate

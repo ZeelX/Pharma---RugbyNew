@@ -120,16 +120,22 @@ class f_license(models.Model):
     federation_FK = models.ForeignKey(d_federation, on_delete=models.CASCADE)
     sex_FK = models.ForeignKey(d_sex, on_delete=models.CASCADE)
     age_FK = models.ForeignKey(d_age, on_delete=models.CASCADE)
-    date_FK = models.ForeignKey(d_date, on_delete=models.CASCADE)
     geo_FK = models.ForeignKey(d_geo, on_delete=models.CASCADE)
-    count = models.IntegerField(default= None)
-    # pk => federation_FK + sex_FK + age_FK + date_FK + geo_FK
+    count = models.IntegerField(default = None)
+    # pk => federation_FK + sex_FK + age_FK + geo_FK
 class f_club(models.Model):
     club_PK = models.CharField(max_length=250, primary_key= True,unique=True)
     club_type_FK = models.ForeignKey(d_club_type, on_delete=models.CASCADE)
     federation_FK = models.ForeignKey(d_federation, on_delete=models.CASCADE)
-    date_FK = models.ForeignKey(d_date, on_delete=models.CASCADE)
     geo_FK = models.ForeignKey(d_geo, on_delete=models.CASCADE)
     count = models.IntegerField(default= None)
     #PK => club_type_FK + federation_FK + date_FK+ geo_FK
+
+class city(models.Model):
+    postal_code = models.CharField(max_length=5, primary_key=True)
+    name = models.CharField(max_length=300)
+    departement = models.CharField(max_length=150)
+    region = models.CharField(max_length=150)
+    country = models.CharField(max_length=100)
+
 

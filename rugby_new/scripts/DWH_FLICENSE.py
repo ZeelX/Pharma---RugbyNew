@@ -1,54 +1,63 @@
 import os
 import django
-import re
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rugby_new.settings')
+import sqlite3
+import pandas as pd
+import time
 
-# Chargez la configuration de Django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rugby_new.settings')
 django.setup()
 
-from app.models import ODS_License, d_federation, d_sex, d_age, d_date, d_geo, f_license
-from django.db.models import Q
+from app.models import d_federation, d_sex, d_age, d_geo, f_license
 
+conn = sqlite3.connect('../db.sqlite3')
 
-def extract_data_f_license():
-    return ODS_License.objects.filter(~Q(code_commune='NR - Non réparti'), Q(region='Auvergne-Rhône-Alpes'))
+df_app_club_2 = pd.read_sql_query(
+    "SELECT * FROM app_ods_license WHERE region = 'Auvergne-Rhône-Alpes' AND code_commune != 'NR - Non réparti'", conn)
+df_app_club_2 = df_app_club_2.loc[:, ~df_app_club_2.columns.str.contains('f_nr|h_nr|nr_nr')]
 
+sex_dict = {sex.code_sex: sex for sex in d_sex.objects.all()}
+age_dict = {age.code_age: age for age in d_age.objects.all()}
+fede_dict = {fede.code_federation: fede for fede in d_federation.objects.all()}
+local_dict = {local.geo_key: local for local in d_geo.objects.all()}
+licences_to_create = []
+start_time = time.time()
 
-f_license.objects.all().delete()
-f_license_list = []
+print('start ODS_license')
+for _, row in df_app_club_2.iterrows():
+    for col in row.index:
+        if col.startswith(('f', 'h')) and not col.startswith(('fede')):
+            sex_code = col[0]
+            sex = sex_dict.get(sex_code)
+            age_label = col[1:]
+            age = age_dict.get(age_label)
+            if sex and age:
 
-def extract_code_sex_and_age(element):
-    for attr_name, attr_value in element.__dict__.items():
-        if (attr_name.startswith('h') or attr_name.startswith('f')) and attr_name != 'fede' and attr_value != '0':
-            sex = attr_name[0]
-            age = attr_name[1:]
-            count = attr_value
-            return sex, age, count
+                code_federation = row['code']
+                fede = fede_dict.get(code_federation)
+                local_id = row['code_commune'] + row['code_QPV']
+                local = local_dict.get(local_id)
+                if fede and local:
 
+                    nb_target = row[col]
+                    print(nb_target)
+                    if nb_target is not None:
+                        licence = f_license(
+                            license_PK=str(fede) + sex_code + age_label + str(local),
+                            federation_FK=fede,
+                            sex_FK=sex,
+                            age_FK=age,
+                            geo_FK=local,
+                            count=nb_target
+                        )
+                        licences_to_create.append(licence)
+                    else:
+                        print("Erreur: Valeur NULL détectée pour le nombre cible")
+                else:
+                    print("Erreur: Fédération ou Localisation non trouvée pour :", fede, local_id)
 
+f_license.objects.bulk_create(licences_to_create)
 
-
-for data in extract_data_f_license():
-    extraction = extract_code_sex_and_age(data)
-    print(extraction)
-    federation_instance = d_federation.objects.get(code_federation=data.fede)
-    sex_instance = d_sex.objects.get(code_sex=extraction[0])
-    age_instance = d_age.objects.get(code_age=extraction[1])
-    date_instance = d_date.objects.get(date_PK='2021-01-01')
-    geo_instance = d_geo.objects.get(geo_key=data.code_commune + data.code_QPV)
-
-    # Créer l'instance f_license
-    f_license_instance = f_license(
-        license_PK=data.fede + extraction[0] + extraction[1] + '2021-01-01' + data.code_commune + data.code_QPV,
-        federation_FK=federation_instance,
-        sex_FK=sex_instance,
-        age_FK=age_instance,
-        date_FK=date_instance,
-        geo_FK=geo_instance,
-        count=extraction[2]
-    )
-    f_license_list.append(f_license_instance)
-
-print('Start bulk insert')
-print(len(f_license_list))
-f_license.objects.bulk_create(f_license_list)
+end_time = time.time()
+execution_time = end_time - start_time
+print(f"Temps d'exécution: {execution_time} secondes")
+conn.close()

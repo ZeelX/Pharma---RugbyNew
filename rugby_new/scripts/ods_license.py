@@ -1,6 +1,12 @@
 import os
+import django
 
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rugby_new.settings')
+
+django.setup()
 from app.models import ODS_License
+
+
 import pandas as pd
 
 from rugby_new.settings import DATA_DIR
